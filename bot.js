@@ -68,6 +68,9 @@ function playsong(song, message) {
           isPlaying = true
           dispatcher.on('finish', () => {
           queue.shift()
+          if(queue.length === 0 ) {
+            leave(message)
+          }
           connection.play(ytdl(queue[0]))
         })
         }
@@ -91,6 +94,9 @@ function skip(message) {
   message.react("⏩")
   queue.shift()
   isPlaying = false
+  if(queue.length === 0) {
+    leave(message)
+  }
   playsong(queue[0], message)
   const embed = new Discord.MessageEmbed()
   .setColor('#0099ff')
