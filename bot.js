@@ -26,7 +26,7 @@ function playsong(song, message) {
     fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${song}&key=${process.env.Youtube_api}`)
     .then(res => res.json())
     .then(res => {
-      if(res) {
+      if(res.items[0].id) {
         if(res.items[0].id.videoId === undefined || null) {
           message.reply('No video founded')
         } else {
