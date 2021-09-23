@@ -39,6 +39,7 @@ function playsong(song, message) {
         .addFields(
           { name: 'Error value', value: 'Sorry, the api\'s daily maximum request is a hundred'}
           )
+        message.channel.send(embed)
       }
     })
   
