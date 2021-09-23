@@ -26,10 +26,19 @@ function playsong(song, message) {
     fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${song}&key=${process.env.Youtube_api}`)
     .then(res => res.json())
     .then(res => {
-      if(res.items[0].id.videoId === undefined || null) {
-        message.reply('No video founded')
+      if(res) {
+        if(res.items[0].id.videoId === undefined || null) {
+          message.reply('No video founded')
+        } else {
+          playSong(res.items[0].id.videoId, res.items[0].snippet.title, res.items[0].snippet.thumbnails.default.url, res.items[0].snippet.channelTitle)
+        }
       } else {
-        playSong(res.items[0].id.videoId, res.items[0].snippet.title, res.items[0].snippet.thumbnails.default.url, res.items[0].snippet.channelTitle)
+        const embed = new Discord.MessageEmbed()
+        .setColor('red')
+        .setTitle('Error')
+        .addFields(
+          { name: 'Error value', value: 'Sorry, the api\'s daily maximum request is a hundred'}
+          )
       }
     })
   
