@@ -118,7 +118,7 @@ function help(message) {
   const replymsg = `**__Feri help__ **
   *commands:*
   - **!play**
-     !play + *songs name* => the bot will join to your voice channel and plays the song
+     !play + *songs name* => the bot is going to join to your voice channel and play the song
   -**!skip**
      skips the songs and go to the next one on the queue
   -**!stop**
