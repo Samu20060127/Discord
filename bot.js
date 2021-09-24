@@ -19,6 +19,8 @@ client.on("message", message =>{
     leave(message)
   } else if (message.content.startsWith(`${prefix}skip`)) {
     skip(message)
+  } else if (message.content.startsWith(`${prefix}help`)) {
+    help(message)
   }
 })
 
@@ -109,6 +111,19 @@ function leave(message) {
   message.react('🛑')
   message.member.voice.channel.leave()
   queue = []
+}
+
+function help(message) {
+  message.react('🙋')
+  const replymsg = `**__Feri help__ **
+  *commands:*
+  - **!play**
+     !play -> song name
+  -**!skip**
+     skips the songs and go to the next one on the queue
+  -**!stop**
+     The bot is going to leave the voicechannel and stops the music`
+  message.channel.send(replymsg)
 }
 
 client.login(process.env.Bot_token);
