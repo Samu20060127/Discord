@@ -120,9 +120,9 @@ function help(message) {
   - **!play**
      !play + *songs name* => the bot is going to join to your voice channel and play the song
   -**!skip**
-     skips the songs and go to the next one on the queue
+     skips the songs and plays the next one on the queue
   -**!stop**
-     The bot is going to leave the voicechannel and stops the music`
+     The bot is going to leave the voice channel`
   message.channel.send(replymsg)
 }
 
