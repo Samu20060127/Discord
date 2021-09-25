@@ -78,32 +78,18 @@ function playsong(song, message) {
         }
     })
 
-    if(queue.length === 0) {
-      const embed = new Discord.MessageEmbed()
-      .setColor('#0099ff')
-      .setTitle(songTitle)
-      .setURL(`https://www.youtube.com/watch?v=${songURL}`)
-      .setAuthor('Playing song', message.author.avatarURL())
-      .setThumbnail(songThumbnail)
-      .addFields(
-        { name: 'Channel', value: channel, inline: true }
-      )
+    const embed = new Discord.MessageEmbed()
+    .setColor('#0099ff')
+    .setTitle(songTitle)
+    .setURL(`https://www.youtube.com/watch?v=${songURL}`)
+    .setAuthor('Playing song', message.author.avatarURL())
+    .setThumbnail(songThumbnail)
+    .addFields(
+      { name: 'Channel', value: channel, inline: true }
+    )
   
-      message.reply(embed)
-    } else {
-      const embed = new Discord.MessageEmbed()
-      .setColor('#0099ff')
-      .setTitle(songTitle)
-      .setURL(`https://www.youtube.com/watch?v=${songURL}`)
-      .setAuthor('Added to queue', message.author.avatarURL())
-      .setThumbnail(songThumbnail)
-      .addFields(
-        { name: 'Channel', value: channel, inline: true }
-      )
-  
-      message.reply(embed)
-    }
-    }
+    message.reply(embed)
+  }
 }
 
 function skip(message) {
@@ -138,7 +124,7 @@ function help(message) {
   - **!play**
      !play + *songs name* => the bot is going to join to your voice channel and play the song
   -**!skip**
-     skips the songs and plays the next one on the queue
+     skips the current songs and plays the next one on the queue
   -**!stop**
      The bot is going to leave the voice channel`
   message.channel.send(replymsg)
