@@ -76,8 +76,9 @@ function playsong(song, message) {
           queue.shift()
           if(queue.length === 0 ) {
             leave(message)
+          } else {
+            connection.play(ytdl(queue[0]))
           }
-          connection.play(ytdl(queue[0]))
         })
         }
     })
