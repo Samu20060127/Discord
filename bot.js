@@ -130,7 +130,11 @@ function help(message) {
   -**!skip**
      skips the current songs and plays the next one on the queue
   -**!stop**
-     The bot is going to leave the voice channel`
+     The bot is going to leave the voice channel
+  -**!pause**
+     The bot is going to pause the current song
+  -**!resume**
+     The bot is going to continue the paused song`
   message.channel.send(replymsg)
 }
 
@@ -152,7 +156,6 @@ function resume(message) {
     message.channel.send('Resumed▶') //This is working bc the v14.15.4
     message.react('▶')
     isPlaying = true
-    console.log('Resumed')
   } else {
     message.channel.send('The song is not paused')
   }
