@@ -123,7 +123,11 @@ function skip(message) {
 
 function leave(message) {
   message.react('🛑')
-  message.member.voice.channel.leave()
+  if(message.member.voice.channel) {
+    message.member.voice.channel.leave()
+  } else {
+    message.channel.send('I can not leave anything')
+  }
   queue = []
 }
 
