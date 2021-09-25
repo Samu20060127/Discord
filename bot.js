@@ -21,6 +21,10 @@ client.on("message", message =>{
     skip(message)
   } else if (message.content.startsWith(`${prefix}help`)) {
     help(message)
+  } else if (message.content.startsWith(`${prefix}pause`)) {
+    pause()
+  } else if (message.content.startsWith(`${prefix}resume`)) {
+    resume()
   }
 })
 
@@ -72,6 +76,23 @@ function playsong(song, message) {
           queue.shift()
           if(queue.length === 0 ) {
             leave(message)
+          }
+          function pause() {
+            message.react('⏸')
+            dispatcher.pause()
+            const embed = new Discord.MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle('Paused⏸')
+            message.react(embed)
+          }
+
+          function resume() {
+            message.react('▶')
+            dispatcher.resume()
+            const embed = new Discord.MessageEmbed()
+            .setColor('#0099ff')
+            .setTitle('Resumed▶')
+            message.react(embed)
           }
           connection.play(ytdl(queue[0]))
         })
