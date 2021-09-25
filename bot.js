@@ -76,7 +76,6 @@ function playsong(song, message) {
           queue.shift()
           if(queue.length === 0 ) {
             leave(message)
-            queue = []
           }
           connection.play(ytdl(queue[0]))
         })
@@ -119,6 +118,7 @@ function leave(message) {
   } else {
     message.channel.send('I can not leave anything')
   }
+  global.dispatcher.destroy()
   queue = []
 }
 
