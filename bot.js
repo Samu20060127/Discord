@@ -22,9 +22,9 @@ client.on("message", message =>{
   } else if (message.content.startsWith(`${prefix}help`)) {
     help(message)
   } else if (message.content.startsWith(`${prefix}pause`)) {
-    pause()
-  } else if (message.content.startsWith(`${prefix}resume`)) {
-    resume()
+    pause(message)
+  }  else if (message.content.startsWith(`${prefix}resume`)) {
+    resume(message)
   }
 })
 
@@ -32,7 +32,7 @@ function playsong(song, message) {
     fetch(`https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=1&q=${song}&key=${process.env.Youtube_api}`)
     .then(res => res.json())
     .then(res => {
-      if(res.items[0].id) {
+      if(res.items[0]) {
         if(res.items[0].id.videoId === undefined || null) {
           message.reply('No video founded')
         } else {
@@ -70,29 +70,12 @@ function playsong(song, message) {
         if(isPlaying == true) {
   
         } else {
-          const dispatcher = connection.play(ytdl(queue[0]))
+          global.dispatcher = connection.play(ytdl(queue[0]))
           isPlaying = true
           dispatcher.on('finish', () => {
           queue.shift()
           if(queue.length === 0 ) {
             leave(message)
-          }
-          function pause() {
-            message.react('⏸')
-            dispatcher.pause()
-            const embed = new Discord.MessageEmbed()
-            .setColor('#0099ff')
-            .setTitle('Paused⏸')
-            message.react(embed)
-          }
-
-          function resume() {
-            message.react('▶')
-            dispatcher.resume()
-            const embed = new Discord.MessageEmbed()
-            .setColor('#0099ff')
-            .setTitle('Resumed▶')
-            message.react(embed)
           }
           connection.play(ytdl(queue[0]))
         })
@@ -149,6 +132,31 @@ function help(message) {
   -**!stop**
      The bot is going to leave the voice channel`
   message.channel.send(replymsg)
+}
+
+function pause(message) {
+  if(!global.dispatcher.paused && isPlaying == true) {
+    message.react('⏸')
+    global.dispatcher.pause()
+    message.channel.send('Paused⏸')
+    isPlaying = false
+  } else {
+    message.channel.send('The song is already paused')
+  }
+}
+
+function resume(message) {
+
+  if(global.dispatcher.paused && isPlaying == false) {
+    global.dispatcher.resume()
+    message.channel.send('Resumed▶') //This is working bc the v14.15.4
+    message.react('▶')
+    isPlaying = true
+    console.log('Resumed')
+  } else {
+    message.channel.send('The song is not paused')
+  }
+
 }
 
 client.login(process.env.Bot_token);
