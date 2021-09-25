@@ -78,7 +78,8 @@ function playsong(song, message) {
         }
     })
 
-    const embed = new Discord.MessageEmbed()
+    if(queue.length === 0) {
+      const embed = new Discord.MessageEmbed()
       .setColor('#0099ff')
       .setTitle(songTitle)
       .setURL(`https://www.youtube.com/watch?v=${songURL}`)
@@ -89,6 +90,19 @@ function playsong(song, message) {
       )
   
       message.reply(embed)
+    } else {
+      const embed = new Discord.MessageEmbed()
+      .setColor('#0099ff')
+      .setTitle(songTitle)
+      .setURL(`https://www.youtube.com/watch?v=${songURL}`)
+      .setAuthor('Added to queue', message.author.avatarURL())
+      .setThumbnail(songThumbnail)
+      .addFields(
+        { name: 'Channel', value: channel, inline: true }
+      )
+  
+      message.reply(embed)
+    }
     }
 }
 
