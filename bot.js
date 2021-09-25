@@ -118,7 +118,6 @@ function leave(message) {
   } else {
     message.channel.send('I can not leave anything')
   }
-  global.dispatcher.destroy()
   queue = []
 }
 
