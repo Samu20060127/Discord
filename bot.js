@@ -102,8 +102,9 @@ function skip(message) {
   isPlaying = false
   if(queue.length === 0) {
     leave(message)
+  } else {
+    playsong(queue[0], message)
   }
-  playsong(queue[0], message)
   const embed = new Discord.MessageEmbed()
   .setColor('#0099ff')
   .setTitle('Skipped')
