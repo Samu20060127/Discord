@@ -1,12 +1,22 @@
 require('dotenv').config()
-const Discord = require("discord.js");
+const Discord = require("discord.js")
 const fetch = require('node-fetch')
 const ytdl = require("ytdl-core")
+const mongoose = require('mongoose')
+const bcrypt = require('bcrypt')
+
+const User = require('./User')
 
 let isPlaying = false
+let isLoggedIn = false
 let queue = []
 const client = new Discord.Client()
 const prefix = '!'
+
+const uri = process.env.Mongo_Connection
+mongoose.connect(uri, () => {
+  console.log('Connected to the database')
+})
 
 client.once("ready", () => {
   console.log("The bot is running!")
@@ -25,6 +35,12 @@ client.on("message", message =>{
     pause(message)
   }  else if (message.content.startsWith(`${prefix}resume`)) {
     resume(message)
+  } else if (message.content.startsWith(`${prefix}register`)) {
+    registerUser(message)
+  } else if (message.content.startsWith(`${prefix}login`)) {
+    loginUser(message)
+  } else if (message.content.startsWith(`${prefix}deleteaccount`)) {
+    deleteaccount(message)
   }
 })
 
@@ -135,7 +151,11 @@ function help(message) {
   -**!pause**
      The bot is going to pause the current song
   -**!resume**
-     The bot is going to continue the paused song`
+     The bot is going to continue the paused song
+  -**!register**
+     !register + *email address* + *password* => the bot will register an account whit the email and password you passed
+  -**!login**
+     !login + *email address* + *password* => the bot will login you and you can create music tracks, which you can play in the future`
   message.channel.send(replymsg)
 }
 
@@ -163,4 +183,79 @@ function resume(message) {
 
 }
 
+async function registerUser(message) {
+  const components = message.content.split(' ')
+  message.delete()
+  if(components.length !== 3) {
+    return message.channel.send('Sorry, you have to pass the data for your acc')
+  }
+
+  const emailexist = await User.findOne({email: components[1]})
+  if(emailexist) {
+    return message.channel.send('Sorry, but the email is already in use')
+  }
+
+  const salt = await bcrypt.genSalt(10)
+  const hashedpassword = await bcrypt.hash(components[2], salt)
+
+  const user = new User({
+    email: components[1],
+    password: hashedpassword
+  })
+
+  try {
+    await user.save()
+  } catch (error) {
+    return message.channel.send(err)
+  }
+  message.channel.send('You are successfully registered!')
+}
+
+async function loginUser(message) {
+  if(isLoggedIn == true) {
+    return message.channel.send('You are already logged in')
+  }
+
+  const components = message.content.split(' ')
+  message.delete()
+
+  if(components.length !== 3) {
+    return message.channel.send('Sorry, you need to pass your account data')
+  }
+
+  const foundedUser = await User.findOne({email: components[1]})
+
+  if(!foundedUser) {
+    return message.channel.send('No user with that email')
+  }
+
+  const validpassword = await bcrypt.compare(components[2], foundedUser.password)
+  if(!validpassword) {
+    return message.channel.send('Password is incorrect')
+  }
+
+  isLoggedIn = true
+  message.channel.send('Successfully logged in')
+}
+
+async function deleteaccount(message) {
+  if(isLoggedIn == false) {
+    return message.channel.send('You need to be logged in to delete your account')
+  }
+
+  const email = message.content.split(' ')[1]
+  const user = await User.findOne({email: email})
+  if(!email) {
+    return message.channel.send('Sorry, no user with that email')
+  }
+
+  try {
+    user.delete()
+    message.channel.send('Account deleted')
+  } catch (error) {
+    return message.channel.send(err)
+  }
+
+  isLoggedIn = false
+}
 client.login(process.env.Bot_token);
