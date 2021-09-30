@@ -5,10 +5,12 @@ const ytdl = require("ytdl-core")
 const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 
-const User = require('./User')
+const User = require('./schema/User')
+const Tracks = require('./schema/Tracks')
 
 let isPlaying = false
 let isLoggedIn = false
+let loggedInUserEmail = ""
 let queue = []
 const client = new Discord.Client()
 const prefix = '!'
@@ -39,8 +41,12 @@ client.on("message", message =>{
     registerUser(message)
   } else if (message.content.startsWith(`${prefix}login`)) {
     loginUser(message)
+  } else if (message.content.startsWith(`${prefix}logout`)) {
+    logout(message)
   } else if (message.content.startsWith(`${prefix}deleteaccount`)) {
     deleteaccount(message)
+  } else if (message.content.startsWith(`${prefix}createtrack`)) {
+    createTrack(message)
   }
 })
 
@@ -235,6 +241,7 @@ async function loginUser(message) {
   }
 
   isLoggedIn = true
+  loggedInUserEmail = foundedUser.email
   message.channel.send('Successfully logged in')
 }
 
@@ -250,12 +257,37 @@ async function deleteaccount(message) {
   }
 
   try {
-    user.delete()
+    await user.delete()
     message.channel.send('Account deleted')
   } catch (error) {
     return message.channel.send(err)
   }
 
   isLoggedIn = false
+  loggedInUserEmail = ''
 }
+
+function logout(message) {
+  isLoggedIn = false
+  loggedInUserEmail = ''
+  message.channel.send('Successfully logged out')
+}
+
+async function createTrack(message) {
+  const songs = message.content.substring(13).split(' ')
+  const name = songs.shift()
+  const track = new Tracks({
+    email: loggedInUserEmail,
+    name: name,
+    track: songs
+  })
+
+  try {
+    await track.save()
+    message.channel.send('Track successfully created')
+  } catch (err) {
+    return message.channel.send(err)
+  }
+}
+
 client.login(process.env.Bot_token);
