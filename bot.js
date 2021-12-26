@@ -72,12 +72,12 @@ function playSong(songURL, message) {
     voiceChannel.join().then((connection) => {
       if (isPlaying == true) {
       } else {
+        global.connection = connection;
         global.dispatcher = connection.play(ytdl(queue[0]));
         isPlaying = true;
         global.dispatcher.on("finish", () => {
-          isPlaying = false;
           queue.shift();
-          global.dispatcher.play(ytdl(queue[0]));
+          global.connection.play(ytdl(queue[0]));
         });
       }
     });
@@ -111,7 +111,7 @@ function skip(message) {
     return leave(message);
   }
   isPlaying = false;
-  global.dispatcher.play(ytdl(queue[0]));
+  global.connection.play(ytdl(queue[0]));
   const embed = new Discord.MessageEmbed()
     .setColor("#0099ff")
     .setTitle("Skipped");
