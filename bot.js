@@ -76,6 +76,10 @@ function playSong(songURL, message) {
         global.dispatcher.play(ytdl(queue[0]));
         isPlaying = true;
       }
+      global.dispatcher.on("end", () => {
+        queue.shift();
+        global.dispatcher.play(ytdl(queue[0]));
+      });
     });
   }
 }
