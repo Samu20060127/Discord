@@ -66,11 +66,6 @@ function searchSong(song, message) {
 
 function playSong(songURL, message) {
   const voiceChannel = getVoicechannel(message);
-  for (let i = 0; i < queue.length; i++) {
-    if (songURL == queue[i]) {
-      return console.log("song is already in the queue");
-    }
-  }
   queue.push(songURL);
   message.react("🎶");
   if (voiceChannel) {
