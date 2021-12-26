@@ -41,7 +41,7 @@ function searchSong(song, message) {
         if (res.items[0].id.videoId === undefined || null) {
           return message.reply("No video founded");
         } else {
-          let URL = `https://www.youtube.com/watch?v=${res.items[0].id.videoId}`
+          let URL = `https://www.youtube.com/watch?v=${res.items[0].id.videoId}`;
           playSong(URL, message);
           replyMessage(
             URL,
@@ -65,23 +65,23 @@ function searchSong(song, message) {
 }
 
 function playSong(songURL, message) {
-  const voiceChannel = getVoicechannel(message)
+  const voiceChannel = getVoicechannel(message);
   for (let i = 0; i < queue.length; i++) {
-    if(songURL == queue[i]) {
-      return console.log("song is already in the queue")
-    } 
+    if (songURL == queue[i]) {
+      return console.log("song is already in the queue");
+    }
   }
-  queue.push(songURL)
-  message.react("🎶")
-  if(voiceChannel) {
-    voiceChannel.join().then(connection => {
-      if(isPlaying == true) {
-
-      } else  {
-        connection.play(ytdl(queue[0]))
-        isPlaying = true
+  queue.push(songURL);
+  message.react("🎶");
+  if (voiceChannel) {
+    voiceChannel.join().then((connection) => {
+      if (isPlaying == true) {
+      } else {
+        global.dispatcher = connection;
+        global.dispatcher.play(ytdl(queue[0]));
+        isPlaying = true;
       }
-    })
+    });
   }
 }
 
@@ -90,7 +90,7 @@ function getVoicechannel(message) {
   if (!voicechannel) {
     return message.reply("You need to connect to a voice channel");
   }
-  return voicechannel
+  return voicechannel;
 }
 
 function replyMessage(songURL, songTitle, songThumbnail, channel, message) {
@@ -106,13 +106,13 @@ function replyMessage(songURL, songTitle, songThumbnail, channel, message) {
 }
 
 function skip(message) {
-  queue.shift()
+  queue.shift();
   message.react("⏩");
   if (!queue[0]) {
     return leave(message);
   }
-  isPlaying = false
-  playSong(queue[0], message);
+  isPlaying = false;
+  global.dispatcher.play(ytdl(queue[0]));
   const embed = new Discord.MessageEmbed()
     .setColor("#0099ff")
     .setTitle("Skipped");
@@ -138,7 +138,7 @@ function help(message) {
   - **!play**
      !play + *songs name* => the bot is going to join to your voice channel and play the song
   -**!skip**
-     skips the current songs and plays the next one on the queue
+     The bot is going to skip the current song and play the next one in the queue
   -**!stop**
      The bot is going to leave the voice channel
   -**!pause**
