@@ -76,7 +76,8 @@ function playSong(songURL, message) {
         global.dispatcher.play(ytdl(queue[0]));
         isPlaying = true;
       }
-      global.dispatcher.on("end", () => {
+      global.dispatcher.on("finish", () => {
+        isPlaying = false;
         queue.shift();
         global.dispatcher.play(ytdl(queue[0]));
       });
